@@ -33,3 +33,4 @@ If you are going to run the database locally, it's also needed to have [PostgreS
 -   `DATABASE_HOST`: the domain where the database is running;
 -   `DATABASE_PORT`: the port of the database connection;
 -   `DATABASE_SCHEMA`: an existing schema of the database;
+-   `AUTO_FILL_DATABASE`: possibility to auto generate test data in the database. Put value as `true` to execute.
