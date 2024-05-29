@@ -1,13 +1,14 @@
 const express = require('express');
-const {Op} = require('sequelize');
+const {Op, ValidationError} = require('sequelize');
 const sequelize = require('../database/index');
 const Person = require('../database/models/PersonModel');
 
 class PeopleController {
     /**
-     * @param {express.Request} req
-     * @param {express.Response} res
-     *
+     * Create a new person
+     * @param {express.Request} req request
+     * @param {express.Response} res response
+     * @returns {Promise<void>}
      */
     async createPerson(req, res) {
         const {name, cpf, rg, birthdate, gender} = req.body;
@@ -22,47 +23,67 @@ class PeopleController {
                 return res.status(409).send('Person with this RG already exists');
             }
 
-            Person.create({name, cpf, rg, birthdate, gender});
-            res.status(201).send('Person created');
+            person = await Person.create({name, cpf, rg, birthdate, gender});
+            return res.status(201).json(person);
         } catch (error) {
             console.error(error);
-            res.status(500).send('Internal server error');
+            if (error instanceof ValidationError) {
+                const validationError = error.errors[0];
+
+                if (validationError.type === 'notNull Violation' || validationError.type === 'Validation error') {
+                    if (validationError.path === 'name') {
+                        return res.status(400).send('Invalid name');
+                    }
+                    if (validationError.path === 'cpf') {
+                        return res.status(400).send('Invalid CPF');
+                    }
+                    if (validationError.path === 'rg') {
+                        return res.status(400).send('Invalid RG');
+                    }
+                    if (validationError.path === 'birthdate') {
+                        return res.status(400).send('Invalid birthdate');
+                    }
+                    if (validationError.path === 'gender') {
+                        return res.status(400).send('Invalid gender');
+                    }
+                }
+            }
+            return res.status(500).send('Internal server error');
         }
     }
 
     /**
-     * @param {express.Request} req
-     * @param {express.Response} res
+     * Get a person by name, CPF or RG
+     * @param {express.Request} req request
+     * @param {express.Response} res response
+     * @returns {Promise<void>}
      */
     async getPerson(req, res) {
-        const searchMethod = req.body.searchMethod;
+        const {searchMethod, name, cpf, rg} = req.body;
         try {
-            if (searchMethod === 'cpf') {
-                const cpf = req.body.cpf;
-                const person = await Person.findOne({where: {[Op.startsWith]: cpf}});
-
-                if (!person) {
-                    return res.status(404).send('Person not found');
-                }
-                res.json(person);
-            } else if (searchMethod === 'name') {
-                const name = req.body.name;
-                const person = await Person.findAll({where: {[Op.substring]: name}});
-
-                if (!person) {
-                    return res.status(404).send('Person not found');
-                }
-                res.json(person);
+            let person;
+            if (searchMethod === 'name' && name) {
+                person = await Person.findAll({where: {name: {[Op.substring]: name}}});
+            } else if (searchMethod === 'cpf' && cpf) {
+                person = await Person.findOne({where: {cpf: {[Op.startsWith]: cpf}}});
+            } else if (searchMethod === 'rg' && rg) {
+                person = await Person.findOne({where: {rg: {[Op.startsWith]: rg}}});
             }
+            if (!person) {
+                return res.status(404).send('Person not found');
+            }
+            return res.json(person);
         } catch (error) {
             console.error(error);
-            res.status(500).send('Internal server error');
+            return res.status(500).send('Internal server error');
         }
     }
 
     /**
-     * @param {express.Request} req
-     * @param {express.Response} res
+     * Get all people
+     * @param {express.Request} req request
+     * @param {express.Response} res response
+     * @returns {Promise<void>}
      */
     async getPeople(req, res) {
         try {
@@ -70,57 +91,99 @@ class PeopleController {
             if (people.length === 0) {
                 return res.status(404).send('No people found');
             }
-            res.json(people);
+            return res.json(people);
         } catch (error) {
             console.error(error);
-            res.status(500).send('Internal server error');
+            return res.status(500).send('Internal server error');
         }
     }
 
     /**
-     * @param {express.Request} req
-     * @param {express.Response} res
+     * Update a person by the id
+     * @param {express.Request} req request
+     * @param {express.Response} res response
+     * @returns {Promise<void>}
      */
     async updatePerson(req, res) {
-        const id = req.params.id;
-        const name = req.body.name;
-        const cpf = req.body.cpf;
-        const rg = req.body.rg;
-        const birthdate = req.body.birthdate;
-        const gender = req.body.gender;
+        const {id, name, cpf, rg, birthdate, gender} = req.body;
         try {
             const person = await Person.findByPk(id);
             if (!person) {
                 return res.status(404).send('Person not found');
             }
 
-            if (cpf && cpf !== person.cpf) {
-                let confictingPerson = await Person.findOne({where: {cpf}});
-                if (confictingPerson) {
+            let conflictingPerson;
+            if (cpf) {
+                conflictingPerson = await Person.findOne({where: {cpf}});
+                if (conflictingPerson && conflictingPerson.id !== id) {
                     return res.status(409).send('Person with this CPF already exists');
                 }
             }
-
-            if (rg && rg !== person.rg) {
-                confictingPerson = await Person.findOne({where: {rg}});
-                if (confictingPerson) {
+            if (rg) {
+                conflictingPerson = await Person.findOne({where: {rg}});
+                if (conflictingPerson && conflictingPerson.id !== id) {
                     return res.status(409).send('Person with this RG already exists');
                 }
             }
 
             const updatedInfo = {};
-            if (name) updatedInfo.name = name;
-            if (cpf) updatedInfo.cpf = cpf;
-            if (rg) updatedInfo.rg = rg;
-            if (birthdate) updatedInfo.birthdate = birthdate;
-            if (gender) updatedInfo.gender = gender;
+            if (name && name !== person.name) updatedInfo.name = name;
+            if (cpf !== person.cpf) updatedInfo.cpf = cpf;
+            if (rg !== person.rg) updatedInfo.rg = rg;
+            if (birthdate && birthdate !== person.birthdate) updatedInfo.birthdate = birthdate;
+            if (gender && gender !== person.gender) updatedInfo.gender = gender;
 
             person.update(updatedInfo);
 
-            res.send('Person updated');
+            return res.send('Person updated');
         } catch (error) {
             console.error(error);
-            res.status(500).send('Internal server error');
+            if (error instanceof ValidationError) {
+                const validationError = error.errors[0];
+
+                if (validationError.type === 'Validation error' || validationError.type === 'notNull Violation') {
+                    if (validationError.path === 'name') {
+                        return res.status(400).send('Invalid name');
+                    }
+                    if (validationError.path === 'cpf') {
+                        return res.status(400).send('Invalid CPF');
+                    }
+                    if (validationError.path === 'rg') {
+                        return res.status(400).send('Invalid RG');
+                    }
+                    if (validationError.path === 'birthdate') {
+                        return res.status(400).send('Invalid birthdate');
+                    }
+                    if (validationError.path === 'gender') {
+                        return res.status(400).send('Invalid gender');
+                    }
+                }
+
+                return res.status(400).send('Invalid data');
+            }
+            return res.status(500).send('Internal server error');
+        }
+    }
+
+    /**
+     * Delete a person by the id
+     * @param {express.Request} req request
+     * @param {express.Response} res response
+     * @returns {Promise<void>}
+     */
+    async deletePerson(req, res) {
+        const {id} = req.body;
+        try {
+            const person = await Person.findByPk(id);
+            if (!person) {
+                return res.status(404).send('Person not found');
+            }
+
+            await person.destroy();
+            return res.send('Person deleted');
+        } catch (error) {
+            console.error(error);
+            return res.status(500).send('Internal server error');
         }
     }
 }
