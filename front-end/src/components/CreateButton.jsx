@@ -1,6 +1,6 @@
 import {PlusOutlined} from '@ant-design/icons';
 import {Button} from 'antd';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 function CreateButton({
     maxKey,
@@ -18,7 +18,7 @@ function CreateButton({
             name: '',
             cpf: '',
             rg: '',
-            birthdate: moment(),
+            birthdate: dayjs(),
             gender: '',
         };
         setDataSource([newRecord, ...dataSource]);

@@ -1,7 +1,6 @@
 import {CheckOutlined, DeleteFilled, EditFilled} from '@ant-design/icons';
 import {Button, DatePicker, Form, Input, Select, Table} from 'antd';
-import {useState} from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import {createPerson, deletePerson, updatePerson} from '../services/peopleService';
 
 function EditableTable({
@@ -195,7 +194,7 @@ function EditableTable({
                                     name: record.name,
                                     cpf: record.cpf,
                                     rg: record.rg,
-                                    birthdate: moment(finalDate),
+                                    birthdate: dayjs(finalDate),
                                     gender: record.gender,
                                 });
                             }}>
