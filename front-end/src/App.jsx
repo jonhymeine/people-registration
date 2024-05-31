@@ -1,37 +1,69 @@
-import {Flex, Input, Layout, Table} from 'antd';
-import Sider from 'antd/es/layout/Sider';
+import {useState, useEffect} from 'react';
+import {Flex, Form, Layout, Statistic} from 'antd';
 import {Content, Header} from 'antd/es/layout/layout';
+import {getPeople} from './services/peopleService';
 
-const {Search} = Input;
+import EditableTable from './components/EditableTable';
+import FeedbackErrorContainer from './components/FeedbackErrorContainer';
+import Searchbar from './components/Searchbar';
+import CreateButton from './components/CreateButton';
 
 function App() {
-    const columns = [
-        {title: 'Name', dataIndex: 'name', key: 'name'},
-        {title: 'CPF', dataIndex: 'cpf', key: 'cpf'},
-        {title: 'RG', dataIndex: 'rg', key: 'rg'},
-        {title: 'Birthdate', dataIndex: 'birthdate', key: 'birthdate'},
-        {title: 'Gender', dataIndex: 'gender', key: 'gender'},
-    ];
-    const list = [
-        {name: 'John Doe', cpf: '123.456.789-00', rg: '123456789', birthdate: '2000-01-01', gender: 'M'},
-        {name: 'Jane Doe', cpf: '987.654.321-00', rg: '987654321', birthdate: '2000-01-01', gender: 'M'},
-        {name: 'John Smith', cpf: '123.456.789-00', rg: '123456789', birthdate: '2000-01-01', gender: 'M'},
-    ];
+    const [dataSource, setDataSource] = useState([]);
+    const [errors, setErrors] = useState([]);
+    const [creatingRecord, setCreatingRecord] = useState(false);
+    const [maxKey, setMaxKey] = useState(0);
+    const [form] = Form.useForm();
+    const [editingRow, setEditingRow] = useState(null);
+
+    useEffect(() => {
+        getPeople(setDataSource, setMaxKey);
+    }, []);
+
     return (
-        <>
-            <Layout>
-                <Content>
-                    <Flex vertical justify="center" align="center" style={{height: '100vh'}}>
-                        <Search
-                            placeholder="input search text"
-                            onSearch={value => console.log(value)}
-                            style={{width: 200}}
+        <Layout style={{backgroundColor: 'inherit'}}>
+            <Header style={{background: 'white', textAlign: 'center', fontSize: '2rem'}}>People Registration</Header>
+            <Content style={{marginTop: '5rem', overflowX: 'auto'}}>
+                <Flex
+                    vertical
+                    gap={'1rem'}
+                    style={{
+                        width: '65rem',
+                        margin: 'auto',
+                        padding: '2rem',
+                        borderRadius: '0.5rem',
+                        backgroundColor: 'white',
+                    }}>
+                    <Flex align="center" justify="space-between">
+                        <CreateButton
+                            form={form}
+                            maxKey={maxKey}
+                            setCreatingRecord={setCreatingRecord}
+                            dataSource={dataSource}
+                            setDataSource={setDataSource}
+                            editingRow={editingRow}
+                            setEditingRow={setEditingRow}
+                            setMaxKey={setMaxKey}
                         />
-                        <Table columns={columns} dataSource={list} />
+                        <Searchbar setDataSource={setDataSource} setMaxKey={setMaxKey} editingRow={editingRow} />
+                        <Statistic title="Total" value={dataSource.length} />
                     </Flex>
-                </Content>
-            </Layout>
-        </>
+                    <FeedbackErrorContainer errors={errors} />
+                    <EditableTable
+                        form={form}
+                        dataSource={dataSource}
+                        setDataSource={setDataSource}
+                        creatingRecord={creatingRecord}
+                        setCreatingRecord={setCreatingRecord}
+                        maxKey={maxKey}
+                        setMaxKey={setMaxKey}
+                        setErrors={setErrors}
+                        editingRow={editingRow}
+                        setEditingRow={setEditingRow}
+                    />
+                </Flex>
+            </Content>
+        </Layout>
     );
 }
 
