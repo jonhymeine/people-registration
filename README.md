@@ -1,68 +1,40 @@
-<img src="http://www.geomais.com.br/images/logo.png"
-     alt="Geomais Logo" />
-<br />
-# Desafio Geomais
-## Cadastro de pessoas
-
-## Etapa 1 - *(Front-end)*
-Nesta etapa o desafio consiste em criar o front-end que gerencie uma base de dados de pessoas.
-
-### Instruções
-O candidato deve utilizar [ReactJS](https://pt-br.reactjs.org/) para desenvolver o desafio, porém tem a liberdade de realizar como achar melhor, e utilizar qualquer biblioteca que seja do seu agrado. (Damos preferência para [Ant Design](https://ant.design/) como UI)
-
-1. Utilize esse repositorio como [**template**](https://github.com/geomais/desafio/generate)
-2. Crie o seu projeto *ReactJS* dentro da pasta **front-end** do repositório.
-3. Utilize a fake-api deste mesmo repositorio como api do seu projeto, para auxiliar na montagem das telas.
-4. Se a etapa back-end for concluída, deve ser substituída pelo fake-api no front-end.
-
-## Etapa 2 - *(Back-end)*
-Para o back-end, o desafio consiste em criar o serviço que irá prover os dados para o front-end.
-
-### Instruções
-O candidato deve utilizar [NodeJS](https://nodejs.org/pt-br/) para desenvolver o desafio, porém tem a liberdade de realizar como achar melhor, e utilizar qualquer biblioteca que seja do seu agrado. 
-
-1. Utilize esse repositorio como [**template**](https://github.com/geomais/desafio/generate)
-2. Crie o seu projeto *NodeJS* dentro da pasta **back-end** do repositório.
-3. Utilize um banco de dados relacional (Damos preferência para PostgreSQL).
-4. Deixe um dump/backup em arquivo SQL dentro do projeto, para conseguirmos executar seu projeto por completo.
-
-## Entrega
-Após finalizar o desafio, envie um e-mail para a desenvolvimento@geomais.com.br, com o titulo 'Desafio Geomias (Seu nome)'
-
-Aguarde algum contribuidor realizar o code review, e entrar em contato para agendar a segunda etapa da entrevista.
+# People Registration
 
 ---
-### Recursos
-Confirma abaixo os recursos que devem ser implementados na aplicação: 
+
+## About
+
+This application is a CRUD implementation for managing people data stored in a database. It features an API for handling requests and a webpage for interacting with the API to view and modify the database's data.
+
+#### It's possible to:
+
+-   Register people;
+-   Edit people's information;
+-   Delete people from the database;
+-   List all people;
+-   Filter and list people by name, CPF or RG;
+-   Display the number of people listed.
+
+#### People information:
+
+-   Name;
+-   CPF;
+-   RG;
+-   Birthdate;
+-   Gender.
 
 ---
-#### Pessoa
-* Cadastrar pessoa;
-* Editar pessoa;
-* Deletar pessoa;
-* Listar pessoas;
-* Possibilidade de aplicar filtros; (ex.: Buscar pessoa por nome ou CPF)
-* Total de pessoas cadastradas;
 
-O formulário para cadastro de pessoa deve conter os seguintes campos.
+## Back-end
 
-* Nome;
-* CPF;
-* RG;
-* Data de nascimento;
-* Sexo;
+The back-end was developed with [Node.js](https://nodejs.org/en), using [Express](https://expressjs.com/) to create the API and run the server locally. [PostgreSQL](https://www.postgresql.org/) is used as the DBMS, and [Sequelize](https://sequelize.org/) as the ORM.
+Inside the back-end folder, there is another [README](./back-end/README.md) with more details about the requirements and instructions for running and starting the server.
 
 ---
-### Dicas
-* Utilize uma tabela para obter a listagem das pessoas e aplicar filtros.
-* Tenha o CPF e RG como campos únicos.
 
----
-### Avaliação
-* Funcionalidades (Cadastrar/Atualizar/Deletar/Listar);
-* Tratamento de erros;
-* Legibilidade;
-* Identação;
-* Validação na entrada dos dados no formulário;
+## Front-end
+
+The front-end was developed with [React](https://react.dev/), using [Vite](https://vitejs.dev/) to host the webpage locally, and [Ant Design](https://ant.design/) to build the interface.
+Inside the front-end folder, there is another [README](./front-end/README.md) with more details about the requirements and instructions for running and starting the front-end.
 
 ---
