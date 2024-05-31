@@ -136,9 +136,8 @@ class PeopleController {
             if (rg !== person.rg) updatedInfo.rg = rg;
             if (birthdate && birthdate !== person.birthdate) updatedInfo.birthdate = birthdate;
             if (gender && gender !== person.gender) updatedInfo.gender = gender;
-            console.log(id, updatedInfo);
-            person.update(updatedInfo);
 
+            await person.update(updatedInfo);
             return res.send('Person updated');
         } catch (error) {
             console.error(error);
