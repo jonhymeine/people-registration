@@ -4,11 +4,11 @@
 
 ### About
 
-The front-end was developed with [React](https://react.dev/), using [Vite](https://vitejs.dev/) to host the website locally, and [Ant Design](https://ant.design/) to build the page.
+The front-end was developed with [React](https://react.dev/), using [Vite](https://vitejs.dev/) to host the webpage locally, and [Ant Design](https://ant.design/) to build the interface.
 
 ### Preconditions to run
 
-To run the back-end, it's necessary to have [Node.js](https://nodejs.org/en) and [npm](https://www.npmjs.com/) installed in your PC.
+To run the front-end, [Node.js](https://nodejs.org/en) and [npm](https://www.npmjs.com/) must be installed on your PC.
 
 ### Instructions to run
 
@@ -19,7 +19,7 @@ To run the back-end, it's necessary to have [Node.js](https://nodejs.org/en) and
 
 3. Run `npm i` to download all dependencies;
 
-4. Create a `.env` file based on `.env.sample` and edit its environment variables to configure your website local port and API URL;
+4. Create a `.env` file based on `.env.sample` and edit its environment variables to configure your webpage local port and API URL;
 
 5. Run `npm run dev` to start the application.
 
@@ -27,5 +27,5 @@ Observation: make sure the back-end is running to use the application correctly.
 
 **Description of `.env` environment variables:**
 
--   `PORT`: the port that the website is going to run;
+-   `PORT`: the port that the webpage is going to run;
 -   `VITE_API_URL`: the API's URL to send requests (where the back-end is listening to).
