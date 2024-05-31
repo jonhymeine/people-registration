@@ -4,7 +4,7 @@
 
 ### About
 
-The back-end was built with [Node.js](https://nodejs.org/en), using [Express](https://expressjs.com/) to create the API and run the server locally, [PostgreSQL](https://www.postgresql.org/) to be the DBMS and [Sequelize](https://sequelize.org/) as ORM.
+The back-end was developed with [Node.js](https://nodejs.org/en), using [Express](https://expressjs.com/) to create the API and run the server locally, [PostgreSQL](https://www.postgresql.org/) to be the DBMS and [Sequelize](https://sequelize.org/) as ORM.
 
 ### Preconditions to run
 
