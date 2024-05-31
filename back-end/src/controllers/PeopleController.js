@@ -58,16 +58,20 @@ class PeopleController {
      * @param {express.Response} res response
      * @returns {Promise<void>}
      */
-    async getPerson(req, res) {
-        const {searchMethod, name, cpf, rg} = req.body;
+    async getPeopleByFilter(req, res) {
+        const searchMethod = req.params.searchMethod;
+        const searchValue = req.params.searchValue;
         try {
             let person;
-            if (searchMethod === 'name' && name) {
-                person = await Person.findAll({where: {name: {[Op.substring]: name}}});
-            } else if (searchMethod === 'cpf' && cpf) {
-                person = await Person.findOne({where: {cpf: {[Op.startsWith]: cpf}}});
-            } else if (searchMethod === 'rg' && rg) {
-                person = await Person.findOne({where: {rg: {[Op.startsWith]: rg}}});
+            if (searchMethod === 'name') {
+                person = await Person.findAll({
+                    where: {name: {[Op.iLike]: `%${searchValue}%`}},
+                    order: [['name', 'ASC']],
+                });
+            } else if (searchMethod === 'cpf') {
+                person = await Person.findAll({where: {cpf: {[Op.startsWith]: searchValue}}, order: [['cpf', 'ASC']]});
+            } else if (searchMethod === 'rg') {
+                person = await Person.findAll({where: {rg: {[Op.startsWith]: searchValue}}, order: [['rg', 'ASC']]});
             }
             if (!person) {
                 return res.status(404).send('Person not found');
@@ -87,7 +91,7 @@ class PeopleController {
      */
     async getPeople(req, res) {
         try {
-            const people = await Person.findAll();
+            const people = await Person.findAll({order: [['name', 'ASC']]});
             if (people.length === 0) {
                 return res.status(404).send('No people found');
             }
@@ -133,8 +137,7 @@ class PeopleController {
             if (birthdate && birthdate !== person.birthdate) updatedInfo.birthdate = birthdate;
             if (gender && gender !== person.gender) updatedInfo.gender = gender;
 
-            person.update(updatedInfo);
-
+            await person.update(updatedInfo);
             return res.send('Person updated');
         } catch (error) {
             console.error(error);

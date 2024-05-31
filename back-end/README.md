@@ -4,12 +4,11 @@
 
 ### About
 
-The back-end was built with [Node.js](https://nodejs.org/en), using [Express](https://expressjs.com/) to create the API and run the server locally, [PostgreSQL](https://www.postgresql.org/) to be the DBMS and [Sequelize](https://sequelize.org/) as ORM.
+The back-end was developed with [Node.js](https://nodejs.org/en), using [Express](https://expressjs.com/) to create the API and run the server locally. [PostgreSQL](https://www.postgresql.org/) is used as the DBMS, and [Sequelize](https://sequelize.org/) as the ORM.
 
 ### Preconditions to run
 
-To run the back-end, it's necessary to have [Node.js](https://nodejs.org/en) and [npm](https://www.npmjs.com/) installed in your PC.
-If you are going to run the database locally, it's also needed to have [PostgreSQL](https://www.postgresql.org/) installed.
+To run the back-end, [Node.js](https://nodejs.org/en) and [npm](https://www.npmjs.com/) must be installed on your PC. Additionally, if you plan to run the database locally, [PostgreSQL](https://www.postgresql.org/) is also required.
 
 ### Instructions to run
 

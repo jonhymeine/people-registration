@@ -22,6 +22,8 @@ const Person = sequelize.define(
             unique: true,
             validate: {
                 notEmpty: true,
+                isNumeric: true,
+                len: [11, 11],
             },
         },
         rg: {
@@ -30,6 +32,7 @@ const Person = sequelize.define(
             unique: true,
             validate: {
                 notEmpty: true,
+                isNumeric: true,
             },
         },
         birthdate: {
