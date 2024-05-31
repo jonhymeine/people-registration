@@ -6,8 +6,6 @@ const Person = require('./models/PersonModel.js');
 
 const autoFillDatabase = process.env.AUTO_FILL_DATABASE === 'true';
 
-sequelize.sync({alter: true, logging: false});
-
 const fillDatabase = async () => {
     const people = JSON.parse(fs.readFileSync('./src/database/people.json', 'utf-8')).people;
     for (const person of people) {
@@ -19,8 +17,13 @@ const fillDatabase = async () => {
     }
 };
 
-if (autoFillDatabase) {
-    fillDatabase();
-}
+const syncDatabase = async () => {
+    await sequelize.sync({alter: true, logging: false});
+    if (autoFillDatabase) {
+        fillDatabase();
+    }
+};
+
+syncDatabase();
 
 module.exports = sequelize;
